@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng ký tài khoản</title>
+  <link rel="stylesheet" href="register.css">
+</head>
+<body>
+  <div class="container">
+    <h2>🌸 Đăng ký tài khoản</h2>
+
+    <input id="username" type="text" placeholder="👤 Tên đăng nhập">
+    <input id="password" type="password" placeholder="🔒 Mật khẩu">
+
+    <select id="role">
+      <option value="STAFF">Nhân viên</option>
+      <option value="ADMIN">Quản lý</option>
+    </select>
+
+    <button onclick="register()">Đăng ký</button>
+
+    <p id="result"></p>
+  </div>
+
+  <script src="register.js"></script>
+</body>
+</html>

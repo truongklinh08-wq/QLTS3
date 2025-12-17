@@ -26,3 +26,9 @@ CREATE TABLE InvoiceDetail (
     FOREIGN KEY (invoice_id) REFERENCES Invoice(id),
     FOREIGN KEY (product_id) REFERENCES Product(id)
 );
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('ADMIN', 'STAFF') NOT NULL
+);

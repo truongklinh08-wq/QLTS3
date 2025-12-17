@@ -1,7 +1,7 @@
 # Backend – Quản lý quán trà sữa
 
 ## Mô tả
-Backend cho hệ thống quản lý quán trà sữa.
+Backend cho hệ thống quản lý quán trà sữa.  
 Phục vụ các chức năng bán hàng và lưu trữ dữ liệu trong Sprint 1.
 
 ## Phạm vi Sprint 1
@@ -15,3 +15,14 @@ Phục vụ các chức năng bán hàng và lưu trữ dữ liệu trong Sprint
 - Database: MySQL (thiết kế)
 
 ## Cấu trúc thư mục
+backend/
+├── database/
+│ └── schema.sql
+├── src/
+│ ├── product.api.js
+│ └── invoice.api.js
+└── README.md
+
+## Ghi chú
+- Sprint 1 tập trung vào thiết kế cấu trúc và API.
+- Chưa triển khai logic xử lý chi tiết.
