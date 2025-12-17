@@ -7,85 +7,82 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f4f6f8;
+      background: #f2f3f5;
       margin: 0;
       padding: 30px;
     }
 
-    h3 {
-      margin-top: 0;
-      color: #4b2e2e;
-    }
-
     .container {
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 900px;
+      max-width: 1000px;
       margin: auto;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     }
 
-    .form-group {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
+    h2 {
+      margin-top: 0;
+      color: #5a3b2e;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 15px;
+      margin-bottom: 25px;
     }
 
     input {
-      padding: 10px;
-      flex: 1;
-      border-radius: 6px;
+      padding: 12px;
+      border-radius: 8px;
       border: 1px solid #ccc;
+      font-size: 15px;
     }
 
     button {
-      padding: 10px 16px;
+      padding: 12px 18px;
+      border-radius: 8px;
       border: none;
-      border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
+      font-size: 15px;
     }
 
-    button.save {
+    .btn-save {
       background: #6f4e37;
-      color: white;
+      color: #fff;
     }
 
-    button.delete {
-      background: #e74c3c;
-      color: white;
-    }
-
-    button.edit {
+    .btn-edit {
       background: #f1c40f;
       color: #333;
+      margin-right: 6px;
     }
 
-    button:hover {
-      opacity: 0.9;
+    .btn-delete {
+      background: #e74c3c;
+      color: #fff;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
+      margin-top: 10px;
     }
 
-    th {
+    thead {
       background: #6f4e37;
       color: white;
-      padding: 10px;
     }
 
-    td {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
+    th, td {
+      padding: 14px;
       text-align: center;
     }
 
-    tr:hover {
-      background: #f9f1ea;
+    tbody tr {
+      border-bottom: 1px solid #eee;
     }
 
     .status-on {
@@ -103,19 +100,18 @@
 <body>
 
 <div class="container">
-
-  <h3>Thêm / Sửa sản phẩm</h3>
+  <h2>Thêm / Sửa sản phẩm</h2>
 
   <input type="hidden" id="id">
 
-  <div class="form-group">
+  <div class="form-row">
     <input id="name" placeholder="Tên sản phẩm">
     <input id="price" type="number" placeholder="Giá">
     <input id="category" placeholder="Loại">
-    <button class="save" onclick="saveProduct()">Lưu</button>
+    <button class="btn-save" onclick="saveProduct()">Lưu</button>
   </div>
 
-  <h3>Danh sách menu</h3>
+  <h2>Danh sách menu</h2>
 
   <table>
     <thead>
@@ -129,7 +125,6 @@
     </thead>
     <tbody id="menu-body"></tbody>
   </table>
-
 </div>
 
 <script>
@@ -152,8 +147,8 @@ function loadMenu() {
             ${item.isAvailable ? 'Đang bán' : 'Ngưng bán'}
           </td>
           <td>
-            <button class="edit" onclick='editProduct(${JSON.stringify(item)})'>Sửa</button>
-            <button class="delete" onclick="deleteProduct(${item.id})">Xóa</button>
+            <button class="btn-edit" onclick='editProduct(${JSON.stringify(item)})'>Sửa</button>
+            <button class="btn-delete" onclick="deleteProduct(${item.id})">Xóa</button>
           </td>
         `;
         tbody.appendChild(tr);

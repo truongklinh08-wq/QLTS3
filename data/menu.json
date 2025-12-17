@@ -1,10 +1,10 @@
 {
   "menu": [
     {
-      "id": "9583",
-      "name": "trà xanh",
+      "id": "203a",
+      "name": "Trà sữa thái xanh",
       "price": 20000,
-      "category": "trà ",
+      "category": "Trà sữa",
       "isAvailable": true
     }
   ]
