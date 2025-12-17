@@ -1,217 +1,167 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Quản lý menu trà sữa</title>
+<meta charset="UTF-8">
+<title>Quản lý menu trà sữa</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f3f5;
-      margin: 0;
-      padding: 30px;
-    }
+<style>
+body {
+  font-family: Arial;
+  background: #f2f3f5;
+  padding: 30px;
+}
 
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      background: #fff;
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    }
+.container {
+  max-width: 1100px;
+  margin: auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
 
-    h2 {
-      margin-top: 0;
-      color: #5a3b2e;
-    }
+h2 {
+  color: #5a3b2e;
+}
 
-    .form-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr auto;
-      gap: 15px;
-      margin-bottom: 25px;
-    }
+.form-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 15px;
+}
 
-    input {
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 15px;
-    }
+input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
 
-    button {
-      padding: 12px 18px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 15px;
-    }
+button {
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-    .btn-save {
-      background: #6f4e37;
-      color: #fff;
-    }
+.btn-save { background: #6f4e37; color: white; }
+.btn-edit { background: #f1c40f; }
+.btn-delete { background: #e74c3c; color: white; }
 
-    .btn-edit {
-      background: #f1c40f;
-      color: #333;
-      margin-right: 6px;
-    }
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
 
-    .btn-delete {
-      background: #e74c3c;
-      color: #fff;
-    }
+thead {
+  background: #6f4e37;
+  color: white;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
+td, th {
+  padding: 14px;
+  text-align: center;
+}
 
-    thead {
-      background: #6f4e37;
-      color: white;
-    }
-
-    th, td {
-      padding: 14px;
-      text-align: center;
-    }
-
-    tbody tr {
-      border-bottom: 1px solid #eee;
-    }
-
-    .status-on {
-      color: green;
-      font-weight: bold;
-    }
-
-    .status-off {
-      color: gray;
-      font-style: italic;
-    }
-  </style>
+tbody tr:hover {
+  background: #f9f1ea;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
-  <h2>Thêm / Sửa sản phẩm</h2>
+<h2>Thêm / Sửa sản phẩm</h2>
 
-  <input type="hidden" id="id">
+<input type="hidden" id="id">
 
-  <div class="form-row">
-    <input id="name" placeholder="Tên sản phẩm">
-    <input id="price" type="number" placeholder="Giá">
-    <input id="category" placeholder="Loại">
-    <button class="btn-save" onclick="saveProduct()">Lưu</button>
-  </div>
+<div class="form-row">
+  <input id="name" placeholder="Tên sản phẩm">
+  <input id="price" type="number" placeholder="Giá">
+  <input id="category" placeholder="Loại">
+  <button class="btn-save" onclick="saveProduct()">Lưu</button>
+</div>
 
-  <h2>Danh sách menu</h2>
+<h2>Danh sách menu</h2>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Tên</th>
-        <th>Giá</th>
-        <th>Loại</th>
-        <th>Trạng thái</th>
-        <th>Hành động</th>
-      </tr>
-    </thead>
-    <tbody id="menu-body"></tbody>
-  </table>
+<table>
+<thead>
+<tr>
+  <th>Món</th>
+  <th>Tên</th>
+  <th>Giá</th>
+  <th>Loại</th>
+  <th>Trạng thái</th>
+  <th>Hành động</th>
+</tr>
+</thead>
+<tbody id="menu-body"></tbody>
+</table>
 </div>
 
 <script>
-const API_URL = "http://localhost:3001/menu";
+const API = "http://localhost:3002/menu";
 
 function loadMenu() {
-  fetch(API_URL)
+  fetch(API)
     .then(res => res.json())
     .then(data => {
       const tbody = document.getElementById("menu-body");
       tbody.innerHTML = "";
 
       data.forEach(item => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
+        tbody.innerHTML += `
+        <tr>
+          <td style="font-size:22px">${item.image || "🧋"}</td>
           <td>${item.name}</td>
           <td>${item.price.toLocaleString()} đ</td>
           <td>${item.category}</td>
-          <td class="${item.isAvailable ? 'status-on' : 'status-off'}">
-            ${item.isAvailable ? 'Đang bán' : 'Ngưng bán'}
-          </td>
+          <td>${item.isAvailable ? "Đang bán" : "Ngưng bán"}</td>
           <td>
-            <button class="btn-edit" onclick='editProduct(${JSON.stringify(item)})'>Sửa</button>
-            <button class="btn-delete" onclick="deleteProduct(${item.id})">Xóa</button>
+            <button class="btn-edit" onclick='edit(${JSON.stringify(item)})'>Sửa</button>
+            <button class="btn-delete" onclick="remove(${item.id})">Xóa</button>
           </td>
-        `;
-        tbody.appendChild(tr);
+        </tr>`;
       });
     });
 }
 
-function editProduct(item) {
-  document.getElementById("id").value = item.id;
-  document.getElementById("name").value = item.name;
-  document.getElementById("price").value = item.price;
-  document.getElementById("category").value = item.category;
-}
-
 function saveProduct() {
   const id = document.getElementById("id").value;
-  const name = document.getElementById("name").value.trim();
-  const price = document.getElementById("price").value;
-  const category = document.getElementById("category").value.trim();
-
-  if (!name || !price || !category) {
-    alert("Nhập đầy đủ thông tin");
-    return;
-  }
 
   const product = {
-    name,
-    price: Number(price),
-    category,
-    isAvailable: true
+    name: name.value,
+    price: Number(price.value),
+    category: category.value,
+    isAvailable: true,
+    image: "🧋"
   };
 
-  if (id) {
-    fetch(`${API_URL}/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: Number(id), ...product })
-    }).then(resetForm);
-  } else {
-    fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(product)
-    }).then(resetForm);
-  }
+  fetch(id ? `${API}/${id}` : API, {
+    method: id ? "PUT" : "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify(id ? {id:Number(id), ...product} : product)
+  }).then(() => {
+    id.value = name.value = price.value = category.value = "";
+    loadMenu();
+  });
 }
 
-function resetForm() {
-  document.getElementById("id").value = "";
-  document.getElementById("name").value = "";
-  document.getElementById("price").value = "";
-  document.getElementById("category").value = "";
-  loadMenu();
+function edit(item) {
+  id.value = item.id;
+  name.value = item.name;
+  price.value = item.price;
+  category.value = item.category;
 }
 
-function deleteProduct(id) {
-  if (!confirm("Xóa sản phẩm này?")) return;
-  fetch(`${API_URL}/${id}`, { method: "DELETE" })
-    .then(loadMenu);
+function remove(id) {
+  if(confirm("Xóa món này?"))
+    fetch(`${API}/${id}`, {method:"DELETE"}).then(loadMenu);
 }
 
 loadMenu();
 </script>
-
 </body>
 </html>
