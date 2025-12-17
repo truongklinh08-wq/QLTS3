@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý menu trà sữa</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 30px;
+    }
+
+    h3 {
+      margin-top: 0;
+      color: #4b2e2e;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 900px;
+      margin: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    input {
+      padding: 10px;
+      flex: 1;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button.save {
+      background: #6f4e37;
+      color: white;
+    }
+
+    button.delete {
+      background: #e74c3c;
+      color: white;
+    }
+
+    button.edit {
+      background: #f1c40f;
+      color: #333;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th {
+      background: #6f4e37;
+      color: white;
+      padding: 10px;
+    }
+
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    tr:hover {
+      background: #f9f1ea;
+    }
+
+    .status-on {
+      color: green;
+      font-weight: bold;
+    }
+
+    .status-off {
+      color: gray;
+      font-style: italic;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h3>Thêm / Sửa sản phẩm</h3>
+
+  <input type="hidden" id="id">
+
+  <div class="form-group">
+    <input id="name" placeholder="Tên sản phẩm">
+    <input id="price" type="number" placeholder="Giá">
+    <input id="category" placeholder="Loại">
+    <button class="save" onclick="saveProduct()">Lưu</button>
+  </div>
+
+  <h3>Danh sách menu</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tên</th>
+        <th>Giá</th>
+        <th>Loại</th>
+        <th>Trạng thái</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody id="menu-body"></tbody>
+  </table>
+
+</div>
+
+<script>
+const API_URL = "http://localhost:3001/menu";
+
+function loadMenu() {
+  fetch(API_URL)
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById("menu-body");
+      tbody.innerHTML = "";
+
+      data.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.price.toLocaleString()} đ</td>
+          <td>${item.category}</td>
+          <td class="${item.isAvailable ? 'status-on' : 'status-off'}">
+            ${item.isAvailable ? 'Đang bán' : 'Ngưng bán'}
+          </td>
+          <td>
+            <button class="edit" onclick='editProduct(${JSON.stringify(item)})'>Sửa</button>
+            <button class="delete" onclick="deleteProduct(${item.id})">Xóa</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    });
+}
+
+function editProduct(item) {
+  document.getElementById("id").value = item.id;
+  document.getElementById("name").value = item.name;
+  document.getElementById("price").value = item.price;
+  document.getElementById("category").value = item.category;
+}
+
+function saveProduct() {
+  const id = document.getElementById("id").value;
+  const name = document.getElementById("name").value.trim();
+  const price = document.getElementById("price").value;
+  const category = document.getElementById("category").value.trim();
+
+  if (!name || !price || !category) {
+    alert("Nhập đầy đủ thông tin");
+    return;
+  }
+
+  const product = {
+    name,
+    price: Number(price),
+    category,
+    isAvailable: true
+  };
+
+  if (id) {
+    fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: Number(id), ...product })
+    }).then(resetForm);
+  } else {
+    fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(product)
+    }).then(resetForm);
+  }
+}
+
+function resetForm() {
+  document.getElementById("id").value = "";
+  document.getElementById("name").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("category").value = "";
+  loadMenu();
+}
+
+function deleteProduct(id) {
+  if (!confirm("Xóa sản phẩm này?")) return;
+  fetch(`${API_URL}/${id}`, { method: "DELETE" })
+    .then(loadMenu);
+}
+
+loadMenu();
+</script>
+
+</body>
+</html>

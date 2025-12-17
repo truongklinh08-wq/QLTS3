@@ -1,0 +1,11 @@
+{
+  "menu": [
+    {
+      "id": "9583",
+      "name": "trà xanh",
+      "price": 20000,
+      "category": "trà ",
+      "isAvailable": true
+    }
+  ]
+}
