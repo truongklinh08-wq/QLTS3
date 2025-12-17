@@ -6,11 +6,11 @@
       "price": 20000,
       "category": "Trà sữa",
       "isAvailable": true,
-      "image": "🍵"
+      "image": "🧋"
     },
     {
       "id": 2,
-      "name": "Trà sữa trân châu đường đen",
+      "name": "Trà sữa trân châu",
       "price": 25000,
       "category": "Trà sữa",
       "isAvailable": true,
@@ -18,14 +18,6 @@
     },
     {
       "id": 3,
-      "name": "Hồng trà sữa",
-      "price": 22000,
-      "category": "Trà sữa",
-      "isAvailable": true,
-      "image": "🥤"
-    },
-    {
-      "id": 4,
       "name": "Trà đào cam sả",
       "price": 30000,
       "category": "Trà trái cây",
@@ -33,20 +25,27 @@
       "image": "🍑"
     },
     {
-      "id": 5,
-      "name": "Trà vải",
-      "price": 28000,
-      "category": "Trà trái cây",
-      "isAvailable": false,
-      "image": "🍇"
-    },
-    {
-      "id": 6,
+      "id": 4,
       "name": "Matcha đá xay",
       "price": 35000,
       "category": "Đá xay",
       "isAvailable": true,
       "image": "🍧"
+    },
+    {
+      "id": "c648",
+      "name": "Trà sữa thái đỏ",
+      "price": 20000,
+      "category": "Trà sữa",
+      "isAvailable": true
+    },
+    {
+      "id": "8ac7",
+      "name": "Trà tắc",
+      "price": 10000,
+      "category": "Trà trái cây",
+      "isAvailable": true,
+      "image": "🍑"
     }
   ]
 }

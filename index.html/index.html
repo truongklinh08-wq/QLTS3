@@ -10,7 +10,6 @@ body {
   background: #f2f3f5;
   padding: 30px;
 }
-
 .container {
   max-width: 1100px;
   margin: auto;
@@ -19,54 +18,39 @@ body {
   padding: 30px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.08);
 }
-
-h2 {
-  color: #5a3b2e;
-}
-
+h2 { color: #5a3b2e; }
 .form-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr auto;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
   gap: 15px;
 }
-
-input {
+input, select {
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
 }
-
 button {
-  padding: 12px 20px;
+  padding: 12px 18px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
   font-weight: bold;
 }
-
 .btn-save { background: #6f4e37; color: white; }
 .btn-edit { background: #f1c40f; }
 .btn-delete { background: #e74c3c; color: white; }
-
 table {
   width: 100%;
   margin-top: 20px;
   border-collapse: collapse;
 }
-
-thead {
-  background: #6f4e37;
-  color: white;
-}
-
+thead { background: #6f4e37; color: white; }
 td, th {
   padding: 14px;
   text-align: center;
 }
-
-tbody tr:hover {
-  background: #f9f1ea;
-}
+.status-on { color: green; font-weight: bold; }
+.status-off { color: gray; }
 </style>
 </head>
 
@@ -80,7 +64,19 @@ tbody tr:hover {
 <div class="form-row">
   <input id="name" placeholder="Tên sản phẩm">
   <input id="price" type="number" placeholder="Giá">
-  <input id="category" placeholder="Loại">
+
+  <select id="category">
+    <option value="">-- Chọn loại --</option>
+    <option value="Trà sữa">Trà sữa</option>
+    <option value="Trà trái cây">Trà trái cây</option>
+    <option value="Đá xay">Đá xay</option>
+  </select>
+
+  <select id="status">
+    <option value="true">Đang bán</option>
+    <option value="false">Hết hàng</option>
+  </select>
+
   <button class="btn-save" onclick="saveProduct()">Lưu</button>
 </div>
 
@@ -102,66 +98,93 @@ tbody tr:hover {
 </div>
 
 <script>
-const API = "http://localhost:3002/menu";
+const API = "http://localhost:3003/menu";
+const $ = id => document.getElementById(id);
 
 function loadMenu() {
   fetch(API)
-    .then(res => res.json())
+    .then(r => r.json())
     .then(data => {
-      const tbody = document.getElementById("menu-body");
-      tbody.innerHTML = "";
-
-      data.forEach(item => {
-        tbody.innerHTML += `
+      $("menu-body").innerHTML = data.map(item => `
         <tr>
           <td style="font-size:22px">${item.image || "🧋"}</td>
           <td>${item.name}</td>
           <td>${item.price.toLocaleString()} đ</td>
           <td>${item.category}</td>
-          <td>${item.isAvailable ? "Đang bán" : "Ngưng bán"}</td>
-          <td>
-            <button class="btn-edit" onclick='edit(${JSON.stringify(item)})'>Sửa</button>
-            <button class="btn-delete" onclick="remove(${item.id})">Xóa</button>
+          <td class="${item.isAvailable ? 'status-on' : 'status-off'}">
+            ${item.isAvailable ? 'Đang bán' : 'Hết hàng'}
           </td>
-        </tr>`;
-      });
+          <td>
+            <button class="btn-edit" onclick="editProduct(${item.id})">Sửa</button>
+            <button class="btn-delete" onclick="deleteProduct(${item.id})">Xóa</button>
+          </td>
+        </tr>
+      `).join("");
     });
 }
 
 function saveProduct() {
-  const id = document.getElementById("id").value;
+  const id = $("id").value;
 
   const product = {
-    name: name.value,
-    price: Number(price.value),
-    category: category.value,
-    isAvailable: true,
-    image: "🧋"
+    name: $("name").value.trim(),
+    price: Number($("price").value),
+    category: $("category").value,
+    isAvailable: $("status").value === "true",
+    image: getIcon($("category").value)
   };
+
+  if (!product.name || !product.price || !product.category) {
+    alert("Nhập đủ thông tin");
+    return;
+  }
 
   fetch(id ? `${API}/${id}` : API, {
     method: id ? "PUT" : "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify(id ? {id:Number(id), ...product} : product)
-  }).then(() => {
-    id.value = name.value = price.value = category.value = "";
-    loadMenu();
-  });
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(id ? { id: Number(id), ...product } : product)
+  }).then(resetForm);
 }
 
-function edit(item) {
-  id.value = item.id;
-  name.value = item.name;
-  price.value = item.price;
-  category.value = item.category;
+function editProduct(id) {
+  fetch(`${API}/${id}`)
+    .then(r => r.json())
+    .then(item => {
+      $("id").value = item.id;
+      $("name").value = item.name;
+      $("price").value = item.price;
+      $("category").value = item.category;
+      $("status").value = item.isAvailable ? "true" : "false";
+    });
 }
 
-function remove(id) {
-  if(confirm("Xóa món này?"))
-    fetch(`${API}/${id}`, {method:"DELETE"}).then(loadMenu);
+function deleteProduct(id) {
+  if (!confirm("Xóa món này?")) return;
+  fetch(`${API}/${id}`, { method: "DELETE" })
+    .then(loadMenu);
+}
+
+function resetForm() {
+  $("id").value = "";
+  $("name").value = "";
+  $("price").value = "";
+  $("category").value = "";
+  $("status").value = "true";
+  loadMenu();
+}
+
+/* ICON THEO LOẠI */
+function getIcon(category) {
+  if (category === "Trà sữa") return "🧋";
+  if (category === "Trà trái cây") return "🍑";
+  if (category === "Đá xay") return "🍧";
+  return "🥤";
 }
 
 loadMenu();
 </script>
+
+
+
 </body>
 </html>
