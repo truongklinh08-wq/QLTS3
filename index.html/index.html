@@ -11,43 +11,51 @@ body {
   padding: 30px;
 }
 .container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: auto;
   background: #fff;
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 30px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
 }
-h2 { color: #5a3b2e; }
+h2 {
+  color: #6b3f26;
+}
 .form-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  grid-template-columns: 3fr 1.5fr 1.5fr 1.5fr auto;
   gap: 15px;
+  margin-bottom: 30px;
 }
 input, select {
-  padding: 12px;
-  border-radius: 8px;
+  padding: 14px;
+  border-radius: 12px;
   border: 1px solid #ccc;
 }
 button {
-  padding: 12px 18px;
-  border-radius: 8px;
+  padding: 14px 22px;
+  border-radius: 12px;
   border: none;
-  cursor: pointer;
   font-weight: bold;
+  cursor: pointer;
 }
-.btn-save { background: #6f4e37; color: white; }
+.btn-save { background: #6b3f26; color: white; }
 .btn-edit { background: #f1c40f; }
 .btn-delete { background: #e74c3c; color: white; }
+
 table {
   width: 100%;
-  margin-top: 20px;
   border-collapse: collapse;
 }
-thead { background: #6f4e37; color: white; }
-td, th {
-  padding: 14px;
+thead {
+  background: #6b3f26;
+  color: white;
+}
+th, td {
+  padding: 16px;
   text-align: center;
+}
+tbody tr {
+  border-bottom: 1px solid #eee;
 }
 .status-on { color: green; font-weight: bold; }
 .status-off { color: gray; }
@@ -101,28 +109,40 @@ td, th {
 const API = "http://localhost:3003/menu";
 const $ = id => document.getElementById(id);
 
+/* ICON THEO LOẠI */
+function getIcon(category) {
+  if (category === "Trà sữa") return "🧋";
+  if (category === "Trà trái cây") return "🍑";
+  if (category === "Đá xay") return "🍧";
+  return "🥤";
+}
+
+/* LOAD MENU */
 function loadMenu() {
   fetch(API)
-    .then(r => r.json())
+    .then(res => res.json())
     .then(data => {
-      $("menu-body").innerHTML = data.map(item => `
-        <tr>
-          <td style="font-size:22px">${item.image || "🧋"}</td>
-          <td>${item.name}</td>
-          <td>${item.price.toLocaleString()} đ</td>
-          <td>${item.category}</td>
-          <td class="${item.isAvailable ? 'status-on' : 'status-off'}">
-            ${item.isAvailable ? 'Đang bán' : 'Hết hàng'}
-          </td>
-          <td>
-            <button class="btn-edit" onclick="editProduct(${item.id})">Sửa</button>
-            <button class="btn-delete" onclick="deleteProduct(${item.id})">Xóa</button>
-          </td>
-        </tr>
-      `).join("");
+      $("menu-body").innerHTML = "";
+      data.forEach(item => {
+        $("menu-body").innerHTML += `
+          <tr>
+            <td style="font-size:22px">${item.image}</td>
+            <td>${item.name}</td>
+            <td>${item.price.toLocaleString()} đ</td>
+            <td>${item.category}</td>
+            <td class="${item.isAvailable ? 'status-on' : 'status-off'}">
+              ${item.isAvailable ? "Đang bán" : "Hết hàng"}
+            </td>
+            <td>
+              <button class="btn-edit" onclick="editProduct(${item.id})">Sửa</button>
+              <button class="btn-delete" onclick="deleteProduct(${item.id})">Xóa</button>
+            </td>
+          </tr>`;
+      });
     });
 }
 
+/* LƯU / SỬA */
 function saveProduct() {
   const id = $("id").value;
 
@@ -135,7 +155,7 @@ function saveProduct() {
   };
 
   if (!product.name || !product.price || !product.category) {
-    alert("Nhập đủ thông tin");
+    alert("Nhập đầy đủ thông tin");
     return;
   }
 
@@ -146,9 +166,10 @@ function saveProduct() {
   }).then(resetForm);
 }
 
+/* SỬA */
 function editProduct(id) {
   fetch(`${API}/${id}`)
-    .then(r => r.json())
+    .then(res => res.json())
     .then(item => {
       $("id").value = item.id;
       $("name").value = item.name;
@@ -158,12 +179,14 @@ function editProduct(id) {
     });
 }
 
+/* XOÁ */
 function deleteProduct(id) {
   if (!confirm("Xóa món này?")) return;
   fetch(`${API}/${id}`, { method: "DELETE" })
     .then(loadMenu);
 }
 
+/* RESET */
 function resetForm() {
   $("id").value = "";
   $("name").value = "";
@@ -173,18 +196,8 @@ function resetForm() {
   loadMenu();
 }
 
-/* ICON THEO LOẠI */
-function getIcon(category) {
-  if (category === "Trà sữa") return "🧋";
-  if (category === "Trà trái cây") return "🍑";
-  if (category === "Đá xay") return "🍧";
-  return "🥤";
-}
-
 loadMenu();
 </script>
-
-
 
 </body>
 </html>

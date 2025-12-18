@@ -1,7 +1,7 @@
 {
   "menu": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Trà sữa thái xanh",
       "price": 20000,
       "category": "Trà sữa",
@@ -9,15 +9,7 @@
       "image": "🧋"
     },
     {
-      "id": 2,
-      "name": "Trà sữa trân châu",
-      "price": 25000,
-      "category": "Trà sữa",
-      "isAvailable": true,
-      "image": "🧋"
-    },
-    {
-      "id": 3,
+      "id": "2",
       "name": "Trà đào cam sả",
       "price": 30000,
       "category": "Trà trái cây",
@@ -25,27 +17,12 @@
       "image": "🍑"
     },
     {
-      "id": 4,
+      "id": "3",
       "name": "Matcha đá xay",
       "price": 35000,
       "category": "Đá xay",
       "isAvailable": true,
       "image": "🍧"
-    },
-    {
-      "id": "c648",
-      "name": "Trà sữa thái đỏ",
-      "price": 20000,
-      "category": "Trà sữa",
-      "isAvailable": true
-    },
-    {
-      "id": "8ac7",
-      "name": "Trà tắc",
-      "price": 10000,
-      "category": "Trà trái cây",
-      "isAvailable": true,
-      "image": "🍑"
     }
   ]
 }
