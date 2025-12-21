@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Danh mục bàn</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f5efe9;
+    padding: 30px;
+}
+
+.container {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: #6b3f2a;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr auto;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+select, button {
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: #6b3f2a;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #6b3f2a;
+    color: white;
+    padding: 12px;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+.trong {
+    color: green;
+    font-weight: bold;
+}
+
+.het {
+    color: red;
+    font-weight: bold;
+}
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: white;
+}
+
+.btn-xoa {
+    background: #dc3545;
+}
+
+.btn-doi {
+    background: #198754;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h2>Danh mục bàn</h2>
+
+<form action="{{ '/cap_nhat' if ban_sua else '/them' }}" method="post" class="form-row">
+
+    {% if ban_sua %}
+    <input type="hidden" name="so_ban_cu" value="{{ ban_sua.so_ban }}">
+    {% endif %}
+
+    <select name="ten_ban" required>
+        {% for i in range(1,16) %}
+            {% set ten = "Bàn %02d"|format(i) %}
+            <option {{ 'selected' if ban_sua and ban_sua.ten_ban == ten }}>
+                {{ ten }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <select name="vi_tri">
+        <option {{ 'selected' if ban_sua and ban_sua.vi_tri == 'Tầng 1' }}>Tầng 1</option>
+        <option {{ 'selected' if ban_sua and ban_sua.vi_tri == 'Tầng 2' }}>Tầng 2</option>
+        <option {{ 'selected' if ban_sua and ban_sua.vi_tri == 'Tầng 3' }}>Tầng 3</option>
+    </select>
+
+    <select name="trang_thai">
+        <option {{ 'selected' if ban_sua and ban_sua.trang_thai }}>Trống</option>
+        <option {{ 'selected' if ban_sua and not ban_sua.trang_thai }}>Hết</option>
+    </select>
+
+    <button type="submit">
+        {{ 'Cập nhật' if ban_sua else 'Thêm' }}
+    </button>
+</form>
+
+<table>
+<tr>
+    <th>Số bàn</th>
+    <th>Tên bàn</th>
+    <th>Vị trí</th>
+    <th>Trạng thái</th>
+    <th>Hành động</th>
+</tr>
+
+{% for b in ds_ban %}
+<tr>
+    <td>{{ b.so_ban }}</td>
+    <td>{{ b.ten_ban }}</td>
+    <td>{{ b.vi_tri }}</td>
+    <td class="{{ 'trong' if b.trang_thai else 'het' }}">
+        {{ 'Trống' if b.trang_thai else 'Hết' }}
+    </td>
+    <td>
+        <a class="btn btn-xoa" href="/xoa/{{ b.so_ban }}">Xóa</a>
+        <a class="btn btn-doi" href="/sua/{{ b.so_ban }}">Đổi</a>
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+</div>
+</body>
+</html>
