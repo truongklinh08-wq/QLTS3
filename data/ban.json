@@ -1,0 +1,20 @@
+[
+    {
+        "so_ban": 1,
+        "ten_ban": "Bàn 01",
+        "vi_tri": "Tầng 1",
+        "trang_thai": "Trống"
+    },
+    {
+        "so_ban": 2,
+        "ten_ban": "Bàn 02",
+        "vi_tri": "Tầng 1",
+        "trang_thai": false
+    },
+    {
+        "so_ban": 15,
+        "ten_ban": "Bàn 15",
+        "vi_tri": "Tầng 1",
+        "trang_thai": true
+    }
+]
