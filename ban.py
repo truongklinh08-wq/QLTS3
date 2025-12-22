@@ -1,11 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for
-import json
+from flask import Flask, render_template, request, redirect
+import json, os
 
 app = Flask(__name__)
 DATA_FILE = "data/ban.json"
 
 
 def doc_ban():
+    if not os.path.exists(DATA_FILE):
+        return []
     with open(DATA_FILE, encoding="utf-8") as f:
         return json.load(f)
 
@@ -15,61 +17,60 @@ def ghi_ban(ds):
         json.dump(ds, f, ensure_ascii=False, indent=2)
 
 
+@app.route("/")
+def home():
+    return redirect("/ban")
+
+
 @app.route("/ban")
 def danh_muc_ban():
-    ds_ban = doc_ban()
-    return render_template("ban.html", ds_ban=ds_ban, ban_sua=None)
+    ds = doc_ban()
+    return render_template("ban.html", ds_ban=ds)
 
 
-@app.route("/them", methods=["POST"])
-def them_ban():
-    ds_ban = doc_ban()
+@app.route("/luu", methods=["POST"])
+def luu_ban():
+    ds = doc_ban()
 
-    ten_ban = request.form["ten_ban"]
-    vi_tri = request.form["vi_tri"]
-    trang_thai = request.form["trang_thai"] == "1"
+    action = request.form.get("action")
+    so_ban = request.form.get("so_ban")
+    suc_raw = request.form.get("suc_chua")
+    trang_thai = request.form.get("trang_thai") == "1"
 
-    so_ban = f"B{len(ds_ban)+1:02d}"
+    # VALIDATE
+    if not so_ban or not suc_raw:
+        return redirect("/ban")
 
-    ds_ban.append({
-        "so_ban": so_ban,
-        "ten_ban": ten_ban,
-        "vi_tri": vi_tri,
-        "trang_thai": trang_thai
-    })
+    try:
+        suc_chua = int(suc_raw)
+    except ValueError:
+        return redirect("/ban")
 
-    ghi_ban(ds_ban)
-    return redirect(url_for("danh_muc_ban"))
+    if action == "them":
+        ds.append({
+            "so_ban": so_ban,
+            "suc_chua": suc_chua,
+            "trang_thai": trang_thai
+        })
+        ghi_ban(ds)
+        return redirect("/ban?msg=them_ok")
+
+    if action == "sua":
+        for b in ds:
+            if b["so_ban"] == so_ban:
+                b["suc_chua"] = suc_chua
+                b["trang_thai"] = trang_thai
+        ghi_ban(ds)
+        return redirect(f"/ban?msg=sua_ok&ban={so_ban}")
+
+    return redirect("/ban")
 
 
 @app.route("/xoa/<so_ban>")
 def xoa_ban(so_ban):
-    ds_ban = doc_ban()
-    ds_ban = [b for b in ds_ban if b["so_ban"] != so_ban]
-    ghi_ban(ds_ban)
-    return redirect(url_for("danh_muc_ban"))
-
-
-@app.route("/sua/<so_ban>")
-def sua_ban(so_ban):
-    ds_ban = doc_ban()
-    ban_sua = next((b for b in ds_ban if b["so_ban"] == so_ban), None)
-    return render_template("ban.html", ds_ban=ds_ban, ban_sua=ban_sua)
-
-
-@app.route("/cap_nhat", methods=["POST"])
-def cap_nhat_ban():
-    ds_ban = doc_ban()
-    so_ban_cu = request.form["so_ban_cu"]
-
-    for b in ds_ban:
-        if b["so_ban"] == so_ban_cu:
-            b["ten_ban"] = request.form["ten_ban"]
-            b["vi_tri"] = request.form["vi_tri"]
-            b["trang_thai"] = request.form["trang_thai"] == "1"
-
-    ghi_ban(ds_ban)
-    return redirect(url_for("danh_muc_ban"))
+    ds = [b for b in doc_ban() if b["so_ban"] != so_ban]
+    ghi_ban(ds)
+    return redirect(f"/ban?msg=xoa_ok&ban={so_ban}")
 
 
 if __name__ == "__main__":

@@ -1,20 +1,34 @@
 [
-    {
-        "so_ban": 1,
-        "ten_ban": "Bàn 01",
-        "vi_tri": "Tầng 1",
-        "trang_thai": "Trống"
-    },
-    {
-        "so_ban": 2,
-        "ten_ban": "Bàn 02",
-        "vi_tri": "Tầng 1",
-        "trang_thai": false
-    },
-    {
-        "so_ban": 15,
-        "ten_ban": "Bàn 15",
-        "vi_tri": "Tầng 1",
-        "trang_thai": true
-    }
+  {
+    "so_ban": "B03",
+    "ten_ban": "Bàn 3",
+    "vi_tri": "Tầng 2",
+    "trang_thai": true,
+    "suc_chua": 2
+  },
+  {
+    "so_ban": "B04",
+    "suc_chua": 2,
+    "trang_thai": true
+  },
+  {
+    "so_ban": "B05",
+    "suc_chua": 7,
+    "trang_thai": true
+  },
+  {
+    "so_ban": "B06",
+    "suc_chua": 6,
+    "trang_thai": true
+  },
+  {
+    "so_ban": "B07",
+    "suc_chua": 5,
+    "trang_thai": true
+  },
+  {
+    "so_ban": "B01",
+    "suc_chua": 2,
+    "trang_thai": false
+  }
 ]
