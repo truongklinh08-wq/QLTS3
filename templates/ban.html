@@ -5,131 +5,183 @@
 <title>Danh mục bàn</title>
 
 <style>
-body {
-    font-family: Segoe UI, Arial;
-    background: linear-gradient(135deg, #ffe0ef, #fff1f7);
-    padding: 40px;
+body{
+    font-family:Segoe UI, Arial;
+    background:#ffd6e8;
+    padding:30px;
 }
-.container {
-    max-width: 1100px;
-    margin: auto;
-    background: white;
-    border-radius: 26px;
-    padding: 35px;
+.container{
+    width:1000px;
+    margin:auto;
+    background:#ffc0cb;
+    padding:25px;
+    border-radius:14px;
 }
-h2 { color: #d63384; }
+.toolbar{
+    display:flex;
+    gap:10px;
+    margin-bottom:15px;
+}
+button{
+    padding:8px 14px;
+    border:none;
+    border-radius:8px;
+    font-weight:600;
+    cursor:pointer;
+}
+.btn-them{background:#28a745;color:white}
+.btn-sua{background:#ffc107}
+.btn-xoa{background:#dc3545;color:white}
+.btn-clear{background:#0dcaf0}
 
-.form-row {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr auto;
-    gap: 15px;
-    margin-bottom: 30px;
+.form{
+    display:grid;
+    grid-template-columns:120px 1fr;
+    gap:10px;
+    margin-bottom:15px;
 }
-
-select, button {
-    padding: 12px;
-    border-radius: 14px;
-    border: 1px solid #f3b3d3;
-}
-
-.btn-them {
-    background: #ff5fa2;
-    color: white;
-    border: none;
-    font-weight: bold;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-th {
-    background: #ff5fa2;
-    color: white;
-    padding: 12px;
-}
-td {
-    padding: 10px;
-    text-align: center;
+input,select{
+    padding:6px;
+    border-radius:6px;
+    border:1px solid #ccc;
 }
 
-.trong { color: green; font-weight: bold; }
-.het { color: red; font-weight: bold; }
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+th{
+    background:#0d2bf3;
+    color:white;
+    padding:10px;
+}
+td{
+    padding:8px;
+    border:1px solid #ccc;
+}
+tr:hover{
+    background:#e6f0ff;
+    cursor:pointer;
+}
 
-.btn-xoa { background: #ff4d6d; color: white; padding: 6px 12px; border-radius: 8px; }
-.btn-doi { background: #ffb703; padding: 6px 12px; border-radius: 8px; margin-left: 5px; }
+/* ALERT */
+.alert{
+    padding:10px 14px;
+    border-radius:8px;
+    margin:10px 0 15px;
+    font-weight:600;
+}
+.success{
+    background:#d1e7dd;
+    color:#0f5132;
+    border:1px solid #badbcc;
+}
 </style>
 </head>
 
 <body>
 <div class="container">
+<h3>Danh mục bàn</h3>
 
-<h2>🌸 Danh mục bàn</h2>
+{% if request.args.get("msg") == "sua_ok" %}
+<div class="alert success">
+    ✔️ Sửa bàn {{ request.args.get("ban") }} thành công
+</div>
+{% endif %}
 
-<form method="post"
-      action="{{ url_for('cap_nhat_ban') if ban_sua else url_for('them_ban') }}"
-      class="form-row">
+{% if request.args.get("msg") == "them_ok" %}
+<div class="alert success">
+    ✔️ Thêm bàn mới thành công
+</div>
+{% endif %}
 
-    {% if ban_sua %}
-    <input type="hidden" name="so_ban_cu" value="{{ ban_sua.so_ban }}">
-    {% endif %}
+{% if request.args.get("msg") == "xoa_ok" %}
+<div class="alert success">
+    ✔️ Xóa bàn {{ request.args.get("ban") }} thành công
+</div>
+{% endif %}
 
-    <select name="ten_ban">
-        {% for i in range(1,16) %}
-        {% set ten = "Bàn %02d"|format(i) %}
-        <option value="{{ ten }}"
-            {% if ban_sua and ban_sua.ten_ban == ten %}selected{% endif %}>
-            {{ ten }}
-        </option>
-        {% endfor %}
-    </select>
+<form id="formBan" method="post" action="/luu">
+    <input type="hidden" name="action" id="action">
 
-    <select name="vi_tri">
-        {% for vt in ["Tầng 1", "Tầng 2", "Tầng 3"] %}
-        <option value="{{ vt }}"
-            {% if ban_sua and ban_sua.vi_tri == vt %}selected{% endif %}>
-            {{ vt }}
-        </option>
-        {% endfor %}
-    </select>
+    <div class="toolbar">
+        <button type="submit" class="btn-them" onclick="setAction('them')">➕ Thêm</button>
+        <button type="submit" class="btn-sua" onclick="return sua()">✏️ Sửa</button>
+        <button type="button" class="btn-xoa" onclick="xoa()">🗑 Xóa</button>
+        <button type="button" class="btn-clear" onclick="xoaTrang()">❌ Xóa trắng</button>
+    </div>
 
-    <select name="trang_thai">
-        <option value="1"
-            {% if ban_sua and ban_sua.trang_thai %}selected{% endif %}>Trống</option>
-        <option value="0"
-            {% if ban_sua and not ban_sua.trang_thai %}selected{% endif %}>Hết</option>
-    </select>
+    <div class="form">
+        <label>Mã bàn</label>
+        <input id="so_ban" name="so_ban">
 
-    <button class="btn-them">
-        {{ "Cập nhật" if ban_sua else "Thêm" }}
-    </button>
+        <label>Sức chứa</label>
+        <input id="suc_chua" name="suc_chua" type="number">
+
+        <label>Trạng thái</label>
+        <select id="trang_thai" name="trang_thai">
+            <option value="1">Bàn trống</option>
+            <option value="0">Bàn có người</option>
+        </select>
+    </div>
 </form>
 
 <table>
 <tr>
-    <th>Số bàn</th>
-    <th>Tên bàn</th>
-    <th>Vị trí</th>
+    <th>Mã bàn</th>
+    <th>Sức chứa</th>
     <th>Trạng thái</th>
-    <th>Hành động</th>
 </tr>
 
 {% for b in ds_ban %}
-<tr>
-    <td>{{ b.so_ban }}</td>
-    <td>{{ b.ten_ban }}</td>
-    <td>{{ b.vi_tri }}</td>
-    <td class="{{ 'trong' if b.trang_thai else 'het' }}">
-        {{ "Trống" if b.trang_thai else "Hết" }}
-    </td>
-    <td>
-        <a class="btn-xoa" href="{{ url_for('xoa_ban', so_ban=b.so_ban) }}">Xóa</a>
-        <a class="btn-doi" href="{{ url_for('sua_ban', so_ban=b.so_ban) }}">Đổi</a>
-    </td>
+<tr onclick="chonBan('{{b.so_ban}}','{{b.suc_chua}}','{{1 if b.trang_thai else 0}}')">
+    <td>{{b.so_ban}}</td>
+    <td>{{b.suc_chua}}</td>
+    <td>{{"Bàn trống" if b.trang_thai else "Bàn có người"}}</td>
 </tr>
 {% endfor %}
 </table>
-
 </div>
+
+<script>
+let banDangChon = "";
+
+function chonBan(ma, suc, tt){
+    so_ban.value = ma;
+    suc_chua.value = suc;
+    trang_thai.value = tt;
+    banDangChon = ma;
+}
+
+function setAction(act){
+    document.getElementById("action").value = act;
+}
+
+function sua(){
+    if(banDangChon === ""){
+        alert("Vui lòng chọn bàn cần sửa!");
+        return false;
+    }
+    setAction("sua");
+    return true;
+}
+
+function xoa(){
+    if(banDangChon === ""){
+        alert("Vui lòng chọn bàn cần xóa!");
+        return;
+    }
+    if(confirm("Xóa bàn " + banDangChon + " ?")){
+        window.location.href = "/xoa/" + banDangChon;
+    }
+}
+
+function xoaTrang(){
+    document.getElementById("formBan").reset();
+    banDangChon = "";
+}
+</script>
+
 </body>
 </html>
