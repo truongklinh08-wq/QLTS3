@@ -1,16 +1,11 @@
-[
-  {
-    "id": 1,
-    "ten": "Trà sữa trân châu",
-    "gia": 25000,
-    "loai": "Trà sữa",
-    "trang_thai": "Đang bán"
-  },
-  {
-    "id": 2,
-    "ten": "Trà đào cam sả",
-    "gia": 30000,
-    "loai": "Trà trái cây",
-    "trang_thai": "Đang bán"
-  }
-]
+{
+  "menu": [
+    {
+      "id": "203a",
+      "name": "Trà sữa thái xanh",
+      "price": 20000,
+      "category": "Trà sữa",
+      "isAvailable": true
+    }
+  ]
+}
