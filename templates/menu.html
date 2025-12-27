@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Danh mục đồ uống</title>
+
+<style>
+body{
+    font-family:"Segoe UI",Arial;
+    background:#ffd6e8;
+    padding:30px;
+}
+
+/* KHUNG CHÍNH */
+.container{
+    width:1000px;
+    margin:auto;
+    background:#ffc0cb;
+    border-radius:14px;
+    padding:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+
+h3{
+    margin-bottom:15px;
+}
+
+/* TOOLBAR */
+.toolbar{
+    display:flex;
+    gap:10px;
+    margin-bottom:15px;
+}
+.toolbar button{
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    font-weight:600;
+    cursor:pointer;
+}
+.btn-them{background:#28a745;color:white;}
+.btn-sua{background:#ffc107;}
+.btn-xoa{background:#dc3545;color:white;}
+.btn-clear{background:#0dcaf0;}
+.btn-thoat{background:#6c757d;color:white;}
+
+/* FORM */
+.form{
+    display:grid;
+    grid-template-columns:140px 1fr;
+    gap:10px;
+    margin-bottom:15px;
+}
+input{
+    padding:8px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+/* TABLE + CUỘN */
+.table-box{
+    max-height:300px;      /* chiều cao cố định */
+    overflow-y:auto;       /* bật cuộn */
+    background:white;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+th{
+    background:#0d6efd;
+    color:white;
+    padding:10px;
+    position:sticky;
+    top:0;                 /* giữ header khi cuộn */
+}
+td{
+    padding:8px;
+    border-bottom:1px solid #eee;
+    text-align:center;
+}
+tr:hover{
+    background:#f8f9fa;
+}
+tr.active{
+    background:#ffe0ef;
+}
+
+/* SEARCH */
+.search{
+    margin-top:15px;
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+}
+.search input{
+    width:200px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h3>📋 Danh mục đồ uống</h3>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+    <button class="btn-them" onclick="them()">➕ Thêm</button>
+    <button class="btn-sua" onclick="sua()">✏️ Sửa</button>
+    <button class="btn-xoa" onclick="xoa()">🗑️ Xóa</button>
+    <button class="btn-clear" onclick="clearForm()">❌ Xóa trắng</button>
+    <button class="btn-thoat" onclick="alert('Thoát')">🚪 Thoát</button>
+</div>
+
+<!-- FORM -->
+<div class="form">
+    <label>Mã đồ uống</label>
+    <input id="ma">
+
+    <label>Tên đồ uống</label>
+    <input id="ten">
+
+    <label>Đơn giá</label>
+    <input id="gia" type="number">
+</div>
+
+<!-- TABLE CUỘN -->
+<div class="table-box">
+<table>
+<thead>
+<tr>
+    <th>Mã đồ uống</th>
+    <th>Tên đồ uống</th>
+    <th>Đơn giá</th>
+</tr>
+</thead>
+<tbody id="ds"></tbody>
+</table>
+</div>
+
+<!-- SEARCH -->
+<div class="search">
+    <label>Tìm kiếm</label>
+    <input id="tim">
+    <button onclick="timKiem()">🔍</button>
+</div>
+
+</div>
+
+<script>
+let menu = [
+    {ma:"TS01", ten:"Trà sữa truyền thống", gia:30000},
+    {ma:"TS02", ten:"Trà sữa trân châu đen", gia:32000},
+    {ma:"TS03", ten:"Trà sữa trân châu trắng", gia:32000},
+    {ma:"TS04", ten:"Trà sữa phô mai", gia:35000},
+    {ma:"TS05", ten:"Trà sữa socola", gia:35000},
+    {ma:"TS06", ten:"Trà sữa matcha", gia:35000},
+    {ma:"TS07", ten:"Trà sữa trứng muối", gia:35000},
+    {ma:"TS08", ten:"Trà sữa khoai môn", gia:33000},
+    {ma:"TS09", ten:"Trà sữa dâu", gia:33000},
+    {ma:"TS10", ten:"Trà sữa xoài", gia:33000},
+
+    {ma:"TT01", ten:"Trà đào cam sả", gia:30000},
+    {ma:"TT02", ten:"Trà vải", gia:30000},
+    {ma:"TT03", ten:"Trà đào", gia:30000},
+    {ma:"TT04", ten:"Trà tắc", gia:28000},
+    {ma:"TT05", ten:"Trà chanh", gia:25000},
+
+    {ma:"DX01", ten:"Đá xay socola", gia:38000},
+    {ma:"DX02", ten:"Đá xay matcha", gia:38000},
+    {ma:"DX03", ten:"Đá xay dâu", gia:38000},
+
+    {ma:"TX01", ten:"Trà xanh kem cheese", gia:35000},
+    {ma:"TX02", ten:"Hồng trà kem cheese", gia:35000}
+];
+
+let index = -1;
+
+function ve(ds = menu){
+    const tbody = document.getElementById("ds");
+    tbody.innerHTML="";
+    ds.forEach((m,i)=>{
+        tbody.innerHTML += `
+        <tr class="${i===index?'active':''}" onclick="chon(${i})">
+            <td>${m.ma}</td>
+            <td>${m.ten}</td>
+            <td>${m.gia.toLocaleString()}</td>
+        </tr>`;
+    });
+}
+ve();
+
+function chon(i){
+    index=i;
+    ma.value=menu[i].ma;
+    ten.value=menu[i].ten;
+    gia.value=menu[i].gia;
+    ve();
+}
+
+function them(){
+    if(!ma.value||!ten.value||!gia.value){
+        alert("Nhập đủ thông tin!");
+        return;
+    }
+    menu.push({ma:ma.value, ten:ten.value, gia:Number(gia.value)});
+    clearForm();
+    ve();
+}
+
+function sua(){
+    if(index<0) return alert("Chọn dòng cần sửa");
+    menu[index]={ma:ma.value, ten:ten.value, gia:Number(gia.value)};
+    ve();
+}
+
+function xoa(){
+    if(index<0) return alert("Chọn dòng cần xóa");
+    menu.splice(index,1);
+    clearForm();
+    ve();
+}
+
+function clearForm(){
+    ma.value="";
+    ten.value="";
+    gia.value="";
+    index=-1;
+    ve();
+}
+
+function timKiem(){
+    const key = tim.value.toLowerCase();
+    ve(menu.filter(m=>m.ten.toLowerCase().includes(key)));
+}
+</script>
+
+</body>
+</html>

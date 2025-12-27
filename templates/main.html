@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Màn hình chính</title>
+    <style>
+        body{
+            font-family: Arial;
+            background:#ffe6f0;
+            margin:0;
+        }
+        header{
+            background:#ff8fb1;
+            padding:15px;
+            color:white;
+            font-size:22px;
+        }
+        nav{
+            display:flex;
+            gap:15px;
+            background:#ffc2d6;
+            padding:10px;
+        }
+        nav a{
+            text-decoration:none;
+            padding:10px 16px;
+            background:white;
+            border-radius:8px;
+            color:#333;
+            font-weight:bold;
+        }
+        nav a:hover{
+            background:#ff8fb1;
+            color:white;
+        }
+        .content{
+            padding:30px;
+            font-size:18px;
+        }
+        .logout{
+            position:fixed;
+            bottom:20px;
+            right:20px;
+            background:#ff4d6d;
+            color:white;
+            padding:12px 20px;
+            border-radius:10px;
+            text-decoration:none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    🧾 HỆ THỐNG QUẢN LÝ BÁN HÀNG
+</header>
+
+<nav>
+    <a href="/ban">🍽️ Danh mục bàn</a>
+    <a href="/menu">📋 Danh mục món</a>
+    <a href="/hoadon">🧾 Hóa đơn</a>
+    <a href="/thongke">📊 Thống kê</a>
+</nav>
+
+<div class="content">
+    👋 Chào mừng bạn đến với hệ thống quản lý  
+    <br>Hãy chọn chức năng ở thanh menu phía trên.
+</div>
+
+<a href="/logout" class="logout">🚪 Đăng xuất</a>
+
+</body>
+</html>

@@ -6,7 +6,7 @@
 
 <style>
 body{
-    font-family:Segoe UI, Arial;
+    font-family: "Segoe UI", Arial;
     background:#ffd6e8;
     padding:30px;
 }
@@ -16,14 +16,21 @@ body{
     background:#ffc0cb;
     padding:25px;
     border-radius:14px;
+    box-shadow:0 10px 25px rgba(0,0,0,.2);
 }
+h3{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+/* TOOLBAR */
 .toolbar{
     display:flex;
     gap:10px;
     margin-bottom:15px;
 }
 button{
-    padding:8px 14px;
+    padding:8px 16px;
     border:none;
     border-radius:8px;
     font-weight:600;
@@ -34,18 +41,20 @@ button{
 .btn-xoa{background:#dc3545;color:white}
 .btn-clear{background:#0dcaf0}
 
+/* FORM */
 .form{
     display:grid;
     grid-template-columns:120px 1fr;
     gap:10px;
-    margin-bottom:15px;
+    margin-bottom:20px;
 }
 input,select{
-    padding:6px;
+    padding:7px;
     border-radius:6px;
     border:1px solid #ccc;
 }
 
+/* TABLE */
 table{
     width:100%;
     border-collapse:collapse;
@@ -59,6 +68,7 @@ th{
 td{
     padding:8px;
     border:1px solid #ccc;
+    text-align:center;
 }
 tr:hover{
     background:#e6f0ff;
@@ -69,7 +79,7 @@ tr:hover{
 .alert{
     padding:10px 14px;
     border-radius:8px;
-    margin:10px 0 15px;
+    margin-bottom:15px;
     font-weight:600;
 }
 .success{
@@ -82,26 +92,27 @@ tr:hover{
 
 <body>
 <div class="container">
-<h3>Danh mục bàn</h3>
+
+<h3>DANH MỤC BÀN</h3>
+
+<!-- THÔNG BÁO -->
+{% if request.args.get("msg") == "them_ok" %}
+<div class="alert success">✔️ Thêm bàn mới thành công</div>
+{% endif %}
 
 {% if request.args.get("msg") == "sua_ok" %}
 <div class="alert success">
-    ✔️ Sửa bàn {{ request.args.get("ban") }} thành công
-</div>
-{% endif %}
-
-{% if request.args.get("msg") == "them_ok" %}
-<div class="alert success">
-    ✔️ Thêm bàn mới thành công
+✔️ Sửa bàn {{ request.args.get("ban") }} thành công
 </div>
 {% endif %}
 
 {% if request.args.get("msg") == "xoa_ok" %}
 <div class="alert success">
-    ✔️ Xóa bàn {{ request.args.get("ban") }} thành công
+✔️ Xóa bàn {{ request.args.get("ban") }} thành công
 </div>
 {% endif %}
 
+<!-- FORM -->
 <form id="formBan" method="post" action="/luu">
     <input type="hidden" name="action" id="action">
 
@@ -114,10 +125,10 @@ tr:hover{
 
     <div class="form">
         <label>Mã bàn</label>
-        <input id="so_ban" name="so_ban">
+        <input id="so_ban" name="so_ban" required>
 
         <label>Sức chứa</label>
-        <input id="suc_chua" name="suc_chua" type="number">
+        <input id="suc_chua" name="suc_chua" type="number" min="1" required>
 
         <label>Trạng thái</label>
         <select id="trang_thai" name="trang_thai">
@@ -127,6 +138,7 @@ tr:hover{
     </div>
 </form>
 
+<!-- TABLE -->
 <table>
 <tr>
     <th>Mã bàn</th>
@@ -135,22 +147,23 @@ tr:hover{
 </tr>
 
 {% for b in ds_ban %}
-<tr onclick="chonBan('{{b.so_ban}}','{{b.suc_chua}}','{{1 if b.trang_thai else 0}}')">
-    <td>{{b.so_ban}}</td>
-    <td>{{b.suc_chua}}</td>
-    <td>{{"Bàn trống" if b.trang_thai else "Bàn có người"}}</td>
+<tr onclick="chonBan('{{ b.so_ban }}','{{ b.suc_chua }}','{{ b.trang_thai }}')">
+    <td>{{ b.so_ban }}</td>
+    <td>{{ b.suc_chua }}</td>
+    <td>{{ "Bàn trống" if b.trang_thai == 1 else "Bàn có người" }}</td>
 </tr>
 {% endfor %}
 </table>
+
 </div>
 
 <script>
 let banDangChon = "";
 
 function chonBan(ma, suc, tt){
-    so_ban.value = ma;
-    suc_chua.value = suc;
-    trang_thai.value = tt;
+    document.getElementById("so_ban").value = ma;
+    document.getElementById("suc_chua").value = suc;
+    document.getElementById("trang_thai").value = tt;
     banDangChon = ma;
 }
 
@@ -172,7 +185,7 @@ function xoa(){
         alert("Vui lòng chọn bàn cần xóa!");
         return;
     }
-    if(confirm("Xóa bàn " + banDangChon + " ?")){
+    if(confirm("Bạn có chắc muốn xóa bàn " + banDangChon + " ?")){
         window.location.href = "/xoa/" + banDangChon;
     }
 }
