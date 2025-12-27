@@ -53,6 +53,7 @@ def danh_muc_ban():
 @app.route("/luu", methods=["POST"])
 def luu_ban():
     ds = doc_ban()
+
     action = request.form.get("action")
     so_ban = request.form.get("so_ban")
     suc_raw = request.form.get("suc_chua")
@@ -63,24 +64,30 @@ def luu_ban():
 
     try:
         suc_chua = int(suc_raw)
-    except ValueError:
+    except:
         return redirect("/ban")
 
+    # ===== THÊM =====
     if action == "them":
         ds.append({
             "so_ban": so_ban,
             "suc_chua": suc_chua,
             "trang_thai": trang_thai
         })
+        ghi_ban(ds)
+        return redirect("/ban?msg=them_ok")
 
+    # ===== SỬA =====
     if action == "sua":
+        ma_cu = request.form.get("ma_cu")
         for b in ds:
-            if b["so_ban"] == so_ban:
+            if b["so_ban"] == ma_cu:
                 b["suc_chua"] = suc_chua
                 b["trang_thai"] = trang_thai
                 break
+        ghi_ban(ds)
+        return redirect(f"/ban?msg=sua_ok&ban={ma_cu}")
 
-    ghi_ban(ds)
     return redirect("/ban")
 
 

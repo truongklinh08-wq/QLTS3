@@ -6,22 +6,40 @@
 
 <style>
 body{
-    font-family:"Segoe UI",Arial;
+    font-family:"Segoe UI", Arial;
     background:#ffd6e8;
     padding:30px;
 }
-
-/* KHUNG CHÍNH */
 .container{
     width:1000px;
     margin:auto;
     background:#ffc0cb;
     border-radius:14px;
-    padding:20px;
+    padding:25px;
     box-shadow:0 10px 30px rgba(0,0,0,.2);
 }
+h3{margin-bottom:15px;}
 
-h3{
+.btn-home{
+    display:inline-block;
+    margin-bottom:18px;
+    background:#0d6efd;
+    color:white;
+    padding:12px 22px;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:700;
+}
+.btn-home:hover{background:#0b5ed7}
+
+/* ALERT */
+.alert{
+    display:none;
+    background:#d1e7dd;
+    color:#0f5132;
+    padding:12px 16px;
+    border-radius:10px;
+    font-weight:600;
     margin-bottom:15px;
 }
 
@@ -31,7 +49,7 @@ h3{
     gap:10px;
     margin-bottom:15px;
 }
-.toolbar button{
+button{
     border:none;
     padding:8px 14px;
     border-radius:8px;
@@ -42,7 +60,6 @@ h3{
 .btn-sua{background:#ffc107;}
 .btn-xoa{background:#dc3545;color:white;}
 .btn-clear{background:#0dcaf0;}
-.btn-thoat{background:#6c757d;color:white;}
 
 /* FORM */
 .form{
@@ -57,15 +74,14 @@ input{
     border:1px solid #ccc;
 }
 
-/* TABLE + CUỘN */
+/* TABLE */
 .table-box{
-    max-height:300px;      /* chiều cao cố định */
-    overflow-y:auto;       /* bật cuộn */
+    max-height:320px;
+    overflow-y:auto;
     background:white;
     border-radius:8px;
     border:1px solid #ddd;
 }
-
 table{
     width:100%;
     border-collapse:collapse;
@@ -75,19 +91,15 @@ th{
     color:white;
     padding:10px;
     position:sticky;
-    top:0;                 /* giữ header khi cuộn */
+    top:0;
 }
 td{
     padding:8px;
     border-bottom:1px solid #eee;
     text-align:center;
 }
-tr:hover{
-    background:#f8f9fa;
-}
-tr.active{
-    background:#ffe0ef;
-}
+tr:hover{background:#f8f9fa;cursor:pointer;}
+tr.active{background:#ffe0ef;}
 
 /* SEARCH */
 .search{
@@ -97,7 +109,11 @@ tr.active{
     gap:10px;
 }
 .search input{
-    width:200px;
+    width:220px;
+}
+.btn-reset{
+    background:#6c757d;
+    color:white;
 }
 </style>
 </head>
@@ -106,15 +122,18 @@ tr.active{
 
 <div class="container">
 
+<a href="/main" class="btn-home">🏠 Về màn hình chính</a>
+
 <h3>📋 Danh mục đồ uống</h3>
+
+<div id="alertBox" class="alert"></div>
 
 <!-- TOOLBAR -->
 <div class="toolbar">
     <button class="btn-them" onclick="them()">➕ Thêm</button>
     <button class="btn-sua" onclick="sua()">✏️ Sửa</button>
     <button class="btn-xoa" onclick="xoa()">🗑️ Xóa</button>
-    <button class="btn-clear" onclick="clearForm()">❌ Xóa trắng</button>
-    <button class="btn-thoat" onclick="alert('Thoát')">🚪 Thoát</button>
+    <button class="btn-clear" onclick="xoaTrang()">❌ Xóa trắng</button>
 </div>
 
 <!-- FORM -->
@@ -126,10 +145,10 @@ tr.active{
     <input id="ten">
 
     <label>Đơn giá</label>
-    <input id="gia" type="number">
+    <input id="gia" type="number" min="0">
 </div>
 
-<!-- TABLE CUỘN -->
+<!-- TABLE -->
 <div class="table-box">
 <table>
 <thead>
@@ -146,41 +165,49 @@ tr.active{
 <!-- SEARCH -->
 <div class="search">
     <label>Tìm kiếm</label>
-    <input id="tim">
+    <input id="tim" placeholder="Nhập tên đồ uống...">
     <button onclick="timKiem()">🔍</button>
+    <button class="btn-reset" onclick="xemTatCa()">↩ Quay lại menu</button>
 </div>
 
 </div>
 
 <script>
+/* ===== DATA ===== */
 let menu = [
     {ma:"TS01", ten:"Trà sữa truyền thống", gia:30000},
     {ma:"TS02", ten:"Trà sữa trân châu đen", gia:32000},
-    {ma:"TS03", ten:"Trà sữa trân châu trắng", gia:32000},
-    {ma:"TS04", ten:"Trà sữa phô mai", gia:35000},
-    {ma:"TS05", ten:"Trà sữa socola", gia:35000},
-    {ma:"TS06", ten:"Trà sữa matcha", gia:35000},
-    {ma:"TS07", ten:"Trà sữa trứng muối", gia:35000},
-    {ma:"TS08", ten:"Trà sữa khoai môn", gia:33000},
-    {ma:"TS09", ten:"Trà sữa dâu", gia:33000},
-    {ma:"TS10", ten:"Trà sữa xoài", gia:33000},
+    {ma:"TS03", ten:"Trà sữa matcha", gia:35000},
+    {ma:"TS04", ten:"Trà sữa socola", gia:35000},
+    {ma:"TS05", ten:"Trà sữa khoai môn", gia:33000},
 
     {ma:"TT01", ten:"Trà đào cam sả", gia:30000},
     {ma:"TT02", ten:"Trà vải", gia:30000},
-    {ma:"TT03", ten:"Trà đào", gia:30000},
+    {ma:"TT03", ten:"Trà chanh", gia:25000},
     {ma:"TT04", ten:"Trà tắc", gia:28000},
-    {ma:"TT05", ten:"Trà chanh", gia:25000},
+    {ma:"TT05", ten:"Trà đào", gia:30000},
 
     {ma:"DX01", ten:"Đá xay socola", gia:38000},
     {ma:"DX02", ten:"Đá xay matcha", gia:38000},
     {ma:"DX03", ten:"Đá xay dâu", gia:38000},
 
-    {ma:"TX01", ten:"Trà xanh kem cheese", gia:35000},
-    {ma:"TX02", ten:"Hồng trà kem cheese", gia:35000}
+    {ma:"ST01", ten:"Sữa tươi trân châu đường đen", gia:38000},
+    {ma:"ST02", ten:"Sữa tươi matcha", gia:36000},
+    {ma:"ST03", ten:"Sữa tươi socola", gia:36000},
+    {ma:"ST04", ten:"Sữa tươi dâu", gia:36000},
+    {ma:"ST05", ten:"Sữa tươi xoài", gia:36000}
 ];
 
 let index = -1;
 
+/* ===== ALERT ===== */
+function thongBao(msg){
+    alertBox.innerText = "✔️ " + msg;
+    alertBox.style.display = "block";
+    setTimeout(()=>alertBox.style.display="none",2000);
+}
+
+/* ===== RENDER ===== */
 function ve(ds = menu){
     const tbody = document.getElementById("ds");
     tbody.innerHTML="";
@@ -195,38 +222,49 @@ function ve(ds = menu){
 }
 ve();
 
+/* ===== SELECT ===== */
 function chon(i){
-    index=i;
-    ma.value=menu[i].ma;
-    ten.value=menu[i].ten;
-    gia.value=menu[i].gia;
+    index = i;
+    ma.value = menu[i].ma;
+    ten.value = menu[i].ten;
+    gia.value = menu[i].gia;
     ve();
 }
 
+/* ===== CRUD ===== */
 function them(){
-    if(!ma.value||!ten.value||!gia.value){
-        alert("Nhập đủ thông tin!");
+    if(!ma.value || !ten.value || !gia.value){
+        alert("Nhập đầy đủ thông tin!");
         return;
     }
     menu.push({ma:ma.value, ten:ten.value, gia:Number(gia.value)});
-    clearForm();
-    ve();
+    thongBao("Thêm đồ uống thành công");
+    xoaTrang();
 }
 
 function sua(){
-    if(index<0) return alert("Chọn dòng cần sửa");
-    menu[index]={ma:ma.value, ten:ten.value, gia:Number(gia.value)};
+    if(index < 0){
+        alert("Chọn món cần sửa!");
+        return;
+    }
+    menu[index] = {ma:ma.value, ten:ten.value, gia:Number(gia.value)};
+    thongBao("Sửa đồ uống thành công");
     ve();
 }
 
 function xoa(){
-    if(index<0) return alert("Chọn dòng cần xóa");
-    menu.splice(index,1);
-    clearForm();
-    ve();
+    if(index < 0){
+        alert("Chọn món cần xóa!");
+        return;
+    }
+    if(confirm("Xóa đồ uống này?")){
+        menu.splice(index,1);
+        thongBao("Xóa đồ uống thành công");
+        xoaTrang();
+    }
 }
 
-function clearForm(){
+function xoaTrang(){
     ma.value="";
     ten.value="";
     gia.value="";
@@ -234,9 +272,20 @@ function clearForm(){
     ve();
 }
 
+/* ===== SEARCH ===== */
 function timKiem(){
-    const key = tim.value.toLowerCase();
+    const key = tim.value.toLowerCase().trim();
+    if(key===""){
+        alert("Nhập tên đồ uống cần tìm");
+        return;
+    }
     ve(menu.filter(m=>m.ten.toLowerCase().includes(key)));
+}
+
+/* ===== RESET SEARCH ===== */
+function xemTatCa(){
+    tim.value="";
+    ve(menu);
 }
 </script>
 
