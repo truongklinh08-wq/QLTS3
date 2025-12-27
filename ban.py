@@ -146,6 +146,9 @@ def xoa_mon(ma):
 def logout():
     return redirect("/")
 
+@app.route("/main")
+def main_screen():
+    return render_template("main.html")
 
 # ================== CHẠY APP (LUÔN Ở CUỐI FILE) ==================
 if __name__ == "__main__":
