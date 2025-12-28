@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Gọi món – Hóa đơn</title>
+
+  <!-- ✅ LOAD CSS ĐÚNG CHO FLASK -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='order.css') }}">
+</head>
+<body>
+
+<div class="container">
+  <h2>🧾 Lập hóa đơn</h2>
+<!-- NÚT QUAY VỀ -->
+<a href="/main" class="btn-back">🏠 Về màn hình chính</a>
+
+  <!-- CHỌN BÀN -->
+  <label>Bàn</label>
+  <select id="table" onchange="resetOrder()">
+    <option value="">-- Chọn bàn --</option>
+    <option value="1">Bàn 1</option>
+    <option value="2">Bàn 2</option>
+    <option value="3">Bàn 3</option>
+    <option value="4">Bàn 4</option>
+    <option value="5">Bàn 5</option>
+  </select>
+
+  <!-- CHỌN MÓN -->
+  <label>Món nước</label>
+  <select id="product"></select>
+
+  <!-- SỐ LƯỢNG -->
+  <label>Số lượng</label>
+  <input type="number" id="quantity" value="1" min="1">
+
+  <button onclick="addItem()">➕ Thêm món</button>
+
+  <hr>
+
+  <!-- DANH SÁCH MÓN -->
+  <h3>📋 Món đã gọi</h3>
+  <table class="order-table">
+    <thead>
+      <tr>
+        <th>Tên món</th>
+        <th>Giá</th>
+        <th>Số lượng</th>
+        <th>Thành tiền</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody id="order-list">
+      <!-- JS render -->
+    </tbody>
+  </table>
+
+  <!-- TỔNG TIỀN -->
+  <div id="total">Tổng tiền: 0 đ</div>
+
+  <!-- NÚT LƯU -->
+  <button class="btn-save" onclick="saveInvoice()">💾 Lưu hóa đơn</button>
+
+  <hr>
+
+  <!-- LỊCH SỬ -->
+  <h3>📚 Lịch sử hóa đơn</h3>
+  <ul id="invoice-history"></ul>
+</div>
+
+<!-- ✅ LOAD JS ĐÚNG -->
+<script src="{{ url_for('static', filename='order.js') }}"></script>
+</body>
+</html>
