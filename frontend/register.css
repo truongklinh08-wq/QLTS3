@@ -61,3 +61,20 @@ body {
   margin-top: 15px;
   font-weight: bold;
 }
+.login-link {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+}
+
+.login-link a {
+  color: #ff5c8a;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}

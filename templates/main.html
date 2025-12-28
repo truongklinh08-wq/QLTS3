@@ -143,7 +143,13 @@ body{
 </div>
 </div>
 
-<a href="/logout" class="logout">🚪 Đăng xuất</a>
-
+<button class="logout" onclick="logout()">🚪 Đăng xuất</button>
+<script>
+  function logout() {
+    localStorage.removeItem("isLogin");
+    localStorage.removeItem("username");
+    window.location.href = "/frontend/login.html";
+  }
+</script>
 </body>
 </html>
