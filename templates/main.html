@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Màn hình chính</title>
+
+<style>
+body{
+    margin:0;
+    font-family:"Segoe UI", Arial;
+    background:#ffeaf2;
+}
+
+/* HEADER */
+.header{
+    background:linear-gradient(90deg,#ff6f91,#ff9bb5);
+    color:white;
+    padding:25px;
+    text-align:center;
+    font-size:26px;
+    font-weight:700;
+}
+
+/* CONTAINER */
+.container{
+    max-width:1100px;
+    margin:40px auto;
+    padding:0 20px;
+}
+
+/* INTRO */
+.intro{
+    background:white;
+    border-radius:16px;
+    padding:25px;
+    margin-bottom:30px;
+    box-shadow:0 10px 25px rgba(0,0,0,.1);
+    font-size:18px;
+}
+
+/* DASHBOARD */
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:25px;
+}
+
+/* CARD */
+.card{
+    background:white;
+    border-radius:18px;
+    padding:30px 20px;
+    text-align:center;
+    text-decoration:none;
+    color:#333;
+    box-shadow:0 12px 28px rgba(0,0,0,.15);
+    transition:.3s;
+}
+.card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 18px 36px rgba(0,0,0,.2);
+}
+.card .icon{
+    font-size:40px;
+    margin-bottom:15px;
+}
+.card h3{
+    margin:10px 0;
+}
+.card p{
+    font-size:14px;
+    color:#666;
+}
+
+/* COLORS */
+.ban{background:#fff0f5;}
+.mon{background:#f0f8ff;}
+.hoadon{background:#f6ffed;}
+.thongke{background:#fffbe6;}
+
+/* LOGOUT */
+.logout{
+    position:fixed;
+    right:25px;
+    bottom:25px;
+    background:#ff4d6d;
+    color:white;
+    border:none;
+    border-radius:30px;
+    padding:14px 26px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    text-decoration:none;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+.logout:hover{
+    background:#e63e5c;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    🧾 HỆ THỐNG QUẢN LÝ BÁN HÀNG
+</div>
+
+<div class="container">
+
+<div class="intro">
+    👋 <b>Chào mừng bạn!</b><br>
+    Đây là màn hình chính của hệ thống quản lý quán trà sữa.  
+    Vui lòng chọn chức năng bên dưới để thao tác.
+</div>
+
+<div class="dashboard">
+
+    <!-- ✅ DANH MỤC BÀN -->
+    <a href="/ban" class="card ban">
+        <div class="icon">🍽️</div>
+        <h3>Danh mục bàn</h3>
+        <p>Quản lý bàn, sức chứa, trạng thái</p>
+    </a>
+
+    <!-- ✅ DANH MỤC MÓN -->
+    <a href="/menu" class="card mon">
+        <div class="icon">📋</div>
+        <h3>Danh mục món</h3>
+        <p>Quản lý món, giá bán</p>
+    </a>
+
+    <!-- ✅ HÓA ĐƠN -->
+    <a href="/order" class="card hoadon">
+        <div class="icon">🧾</div>
+        <h3>Hóa đơn</h3>
+        <p>Tạo, xem và quản lý hóa đơn</p>
+    </a>
+
+    <!-- Thống kê -->
+    <a href="/statistic" class="card thongke">
+        <div class="icon">📊</div>
+        <h3>Thống kê</h3>
+        <p>Doanh thu, báo cáo</p>
+    </a>
+
+</div>
+</div>
+
+<!-- Đăng xuất -->
+<a href="/logout" class="logout">🚪 Đăng xuất</a>
+
+</body>
+</html>
