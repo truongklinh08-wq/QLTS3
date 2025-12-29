@@ -6,20 +6,22 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h2>🔐 Đăng nhập</h2>
 
-        <form method="POST" action="/login">
-            <input type="text" name="username" placeholder="👤 Tên đăng nhập" required>
-            <input type="password" name="password" placeholder="🔒 Mật khẩu" required>
+<div class="container">
+    <h2>🔐 Đăng nhập</h2>
 
-            <button type="submit">Đăng nhập</button>
-        </form>
+    <form method="post" action="/login">
+        <input type="text" name="username" placeholder="👤 Tên đăng nhập" required>
+        <input type="password" name="password" placeholder="🔒 Mật khẩu" required>
 
-        <div class="register-link">
-            Chưa có tài khoản?
-            <a href="{{ url_for('register') }}">Đăng ký</a>
-        </div>
+        <button type="submit">Đăng nhập</button>
+    </form>
+
+    <div class="register-link">
+        Chưa có tài khoản?
+        <a href="{{ url_for('register') }}">Đăng ký</a>
     </div>
+</div>
+
 </body>
 </html>
