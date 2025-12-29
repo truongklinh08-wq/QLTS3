@@ -1,18 +1,25 @@
 const express = require("express");
 const cors = require("cors");
 
+// import router
+const invoiceRouter = require("./src/invoice.api");
+
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
 
-// TEST SERVER
+/* ======================
+   TEST SERVER
+====================== */
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
-// API đăng ký
+/* ======================
+   AUTH – ĐĂNG KÝ
+====================== */
 app.post("/api/auth/register", (req, res) => {
   const { username, password, role } = req.body;
 
@@ -28,7 +35,9 @@ app.post("/api/auth/register", (req, res) => {
   });
 });
 
-// API đăng nhập
+/* ======================
+   AUTH – ĐĂNG NHẬP
+====================== */
 app.post("/api/auth/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -39,6 +48,14 @@ app.post("/api/auth/login", (req, res) => {
   return res.json({ role: "STAFF" });
 });
 
+/* ======================
+   INVOICE API
+====================== */
+app.use("/api/invoices", invoiceRouter);
+
+/* ======================
+   START SERVER
+====================== */
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 });
