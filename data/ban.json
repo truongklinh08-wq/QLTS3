@@ -1,0 +1,22 @@
+[
+  {
+    "so_ban": "B07",
+    "suc_chua": 4,
+    "trang_thai": false
+  },
+  {
+    "so_ban": "B01",
+    "suc_chua": 2,
+    "trang_thai": false
+  },
+  {
+    "so_ban": "B04",
+    "suc_chua": 4,
+    "trang_thai": true
+  },
+  {
+    "so_ban": "B05",
+    "suc_chua": 6,
+    "trang_thai": true
+  }
+]

@@ -31,6 +31,49 @@ def home():
 def main():
     return render_template("main.html")
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        role = request.form.get("role")
+
+        if not username or not password:
+            return redirect("/register")
+
+        path = "data/users.json"
+        users = doc_json(path)
+
+        users.append({
+            "username": username,
+            "password": password,
+            "role": role
+        })
+
+        ghi_json(path, users)
+
+        return redirect("/login")
+
+    return render_template("register.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        users = doc_json("data/users.json")
+
+        for u in users:
+            if u["username"] == username and u["password"] == password:
+                return redirect("/main")  # ✅ đăng nhập đúng
+
+        return redirect("/login")  # ❌ sai tài khoản
+
+    return render_template("login.html")
+
+
 
 # ================== DANH MỤC BÀN ==================
 @app.route("/ban")

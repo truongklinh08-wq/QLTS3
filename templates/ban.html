@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Danh mục bàn</title>
+
+<style>
+body{
+    font-family:"Segoe UI", Arial;
+    background:#ffd6e8;
+    padding:30px;
+}
+.container{
+    width:1000px;
+    margin:auto;
+    background:#ffc0cb;
+    padding:25px;
+    border-radius:14px;
+    box-shadow:0 10px 25px rgba(0,0,0,.2);
+}
+h3{text-align:center;margin-bottom:20px;}
+
+.btn-home{
+    display:inline-block;
+    margin-bottom:18px;
+    background:#0d6efd;
+    color:white;
+    padding:12px 22px;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:700;
+}
+.btn-home:hover{background:#0b5ed7}
+
+.toolbar{display:flex;gap:10px;margin-bottom:15px;}
+button{
+    padding:8px 16px;
+    border:none;
+    border-radius:8px;
+    font-weight:600;
+    cursor:pointer;
+}
+.btn-them{background:#28a745;color:white}
+.btn-sua{background:#ffc107}
+.btn-xoa{background:#dc3545;color:white}
+.btn-clear{background:#0dcaf0}
+
+.form{
+    display:grid;
+    grid-template-columns:120px 1fr;
+    gap:10px;
+    margin-bottom:20px;
+}
+input,select{
+    padding:7px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+th{background:#0d2bf3;color:white;padding:10px;}
+td{padding:8px;border:1px solid #ccc;text-align:center;}
+tr:hover{background:#e6f0ff;cursor:pointer;}
+
+.alert{
+    padding:10px 14px;
+    border-radius:8px;
+    margin-bottom:15px;
+    font-weight:600;
+}
+.success{
+    background:#d1e7dd;
+    color:#0f5132;
+    border:1px solid #badbcc;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<a href="/main" class="btn-home">🏠 Về màn hình chính</a>
+
+<h3>DANH MỤC BÀN</h3>
+
+{% if request.args.get("msg") == "them_ok" %}
+<div class="alert success">✔️ Thêm bàn mới thành công</div>
+{% endif %}
+{% if request.args.get("msg") == "sua_ok" %}
+<div class="alert success">✔️ Sửa bàn {{ request.args.get("ban") }} thành công</div>
+{% endif %}
+{% if request.args.get("msg") == "xoa_ok" %}
+<div class="alert success">✔️ Xóa bàn {{ request.args.get("ban") }} thành công</div>
+{% endif %}
+
+<form id="formBan" method="post" action="/luu">
+<input type="hidden" name="action" id="action">
+<input type="hidden" name="ma_cu" id="ma_cu">
+
+<div class="toolbar">
+    <button type="submit" class="btn-them" onclick="setAction('them')">➕ Thêm</button>
+    <button type="submit" class="btn-sua" onclick="return sua()">✏️ Sửa</button>
+    <button type="button" class="btn-xoa" onclick="xoa()">🗑 Xóa</button>
+    <button type="button" class="btn-clear" onclick="xoaTrang()">❌ Xóa trắng</button>
+</div>
+
+<div class="form">
+    <label>Mã bàn</label>
+    <input id="so_ban" name="so_ban" required>
+
+    <label>Sức chứa</label>
+    <input id="suc_chua" name="suc_chua" type="number" min="1" required>
+
+    <label>Trạng thái</label>
+    <select id="trang_thai" name="trang_thai" required>
+        <option value="" disabled selected>-- Chọn trạng thái --</option>
+        <option value="1">Bàn trống</option>
+        <option value="0">Bàn có người</option>
+    </select>
+</div>
+</form>
+
+<table>
+<tr>
+    <th>Mã bàn</th>
+    <th>Sức chứa</th>
+    <th>Trạng thái</th>
+</tr>
+{% for b in ds_ban %}
+<tr onclick="chonBan('{{ b.so_ban }}','{{ b.suc_chua }}','{{ b.trang_thai }}')">
+    <td>{{ b.so_ban }}</td>
+    <td>{{ b.suc_chua }}</td>
+    <td>{{ "Bàn trống" if b.trang_thai == 1 else "Bàn có người" }}</td>
+</tr>
+{% endfor %}
+</table>
+
+</div>
+
+<script>
+let banDangChon = "";
+
+function chonBan(ma, suc, tt){
+    document.getElementById("so_ban").value = ma;
+    document.getElementById("suc_chua").value = suc;
+    document.getElementById("trang_thai").value = tt == 1 ? "1" : "0";
+
+    document.getElementById("ma_cu").value = ma;
+    document.getElementById("so_ban").readOnly = true;
+    banDangChon = ma;
+}
+
+function setAction(a){
+    document.getElementById("action").value = a;
+}
+
+function sua(){
+    if(banDangChon === ""){
+        alert("Vui lòng chọn bàn cần sửa!");
+        return false;
+    }
+    setAction("sua");
+    return true;
+}
+
+function xoa(){
+    if(banDangChon === ""){
+        alert("Vui lòng chọn bàn cần xóa!");
+        return;
+    }
+    if(confirm("Xóa bàn " + banDangChon + " ?")){
+        window.location.href = "/xoa/" + banDangChon;
+    }
+}
+
+function xoaTrang(){
+    document.getElementById("formBan").reset();
+    document.getElementById("so_ban").readOnly = false;
+    banDangChon = "";
+}
+</script>
+
+</body>
+</html>
