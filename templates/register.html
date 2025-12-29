@@ -1,32 +1,45 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Đăng ký tài khoản</title>
-  <link rel="stylesheet" href="register.css">
+    <meta charset="UTF-8">
+    <title>Đăng ký tài khoản</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
 </head>
 <body>
-  <div class="container">
+<div class="container">
     <h2>🌸 Đăng ký tài khoản</h2>
 
-    <input id="username" type="text" placeholder="👤 Tên đăng nhập">
-    <input id="password" type="password" placeholder="🔒 Mật khẩu">
+    <!-- FORM QUAN TRỌNG -->
+    <form method="POST" action="/register">
 
-    <select id="role">
-      <option value="STAFF">Nhân viên</option>
-      <option value="ADMIN">Quản lý</option>
-    </select>
+        <input 
+            type="text" 
+            name="username" 
+            placeholder="👤 Tên đăng nhập" 
+            required
+        >
 
-<button type="button" onclick="register()">Đăng ký</button>
-<div class="login-link">
-  Đã có tài khoản?
-  <a href="login.html">Đăng nhập</a>
+        <input 
+            type="password" 
+            name="password" 
+            placeholder="🔒 Mật khẩu" 
+            required
+        >
+
+        <select name="role">
+            <option value="STAFF">Nhân viên</option>
+            <option value="ADMIN">Quản lý</option>
+        </select>
+
+        <!-- PHẢI LÀ submit -->
+        <button type="submit">Đăng ký</button>
+
+    </form>
+
+    <div class="login-link">
+        Đã có tài khoản?
+        <a href="{{ url_for('login') }}">Đăng nhập</a>
+    </div>
 </div>
-
-
-    <p id="result"></p>
-  </div>
-
-  <script src="register.js"></script>
 </body>
 </html>
